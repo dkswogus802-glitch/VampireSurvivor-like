@@ -1841,6 +1841,7 @@ GameObject:
   m_Component:
   - component: {fileID: 409867095}
   - component: {fileID: 409867094}
+  - component: {fileID: 409867096}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1862,14 +1863,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLive: 0
   gameTime: 0
-  maxGameTime: 20
+  maxGameTime: 300
+  balanceVersion: v2
   playerId: 0
   health: 0
   maxHealth: 100
   level: 0
   kill: 0
   exp: 0
-  nextExp: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
+  nextExp: 0300000005000000080000000c0000001000000014000000190000001e00000023000000280000002d000000320000003c0000004600000050000000
   player: {fileID: 902886549}
   pool: {fileID: 483118490}
   uiLevelUp: {fileID: 1054852296}
@@ -1890,6 +1892,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409867096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409867093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 492f4349dc981cf4eaa084ea109cc7b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoPlay: 1
+  targetRuns: 30
+  simSpeed: 8
+  characterIds: 0000000001000000
+  strategies: 000000000100000002000000
+  senseRange: 6
+  fleeRange: 1.8
+  lowHealthRatio: 0.3
+  wanderChangeTime: 2
+  kiteTangent: 0.6
+  state: 0
+  runIndex: 0
+  currentStrategy: 0
 --- !u!1 &468899147
 GameObject:
   m_ObjectHideFlags: 0
@@ -2259,7 +2286,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 9.638889
+  orthographic size: 9.138889
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -10066,10 +10093,23 @@ MonoBehaviour:
     spawnTime: 0.7
     health: 10
     speed: 2
+  - spriteType: 0
+    spawnTime: 0.45
+    health: 15
+    speed: 2.2
   - spriteType: 1
-    spawnTime: 0.2
+    spawnTime: 0.3
     health: 20
     speed: 2.4
+  - spriteType: 1
+    spawnTime: 0.22
+    health: 30
+    speed: 2.5
+  - spriteType: 1
+    spawnTime: 0.18
+    health: 35
+    speed: 2.5
+  levelTime: 60
 --- !u!1 &1315731903
 GameObject:
   m_ObjectHideFlags: 0

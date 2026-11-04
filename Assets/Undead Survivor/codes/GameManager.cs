@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public bool isLive;
     public float gameTime;
     public float maxGameTime = 2 * 10f;
+    [Tooltip("현재 밸런스 버전 (Tools > Balance 메뉴로 설정, 로그에 기록됨)")]
+    public string balanceVersion = "v1";   // [추가]
     [Header("# Player Info")]
     public int playerId;
     public float health;
@@ -123,7 +125,7 @@ public class GameManager : MonoBehaviour
     public void Resume()
     {
         isLive = true;
-        Time.timeScale = 1;
+        Time.timeScale = AutoPlayer.TimeScale;   // [변경] 봇 실행 중이면 배속, 아니면 1배속
     }
 }
 

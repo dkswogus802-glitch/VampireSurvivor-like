@@ -65,7 +65,8 @@ public class Enemy : MonoBehaviour
     public void Init(SpawnData data)
     {
         spriteType = data.spriteType;
-        anim.runtimeAnimatorController = animCon[data.spriteType];
+        // [변경] 프리팹에 없는 적 종류 번호가 들어와도 에러가 나지 않도록 범위 제한
+        anim.runtimeAnimatorController = animCon[Mathf.Clamp(data.spriteType, 0, animCon.Length - 1)];
         speed = data.speed;
         maxHealth = data.health;
         health = data.health;

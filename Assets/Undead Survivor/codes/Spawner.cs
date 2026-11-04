@@ -7,6 +7,9 @@ public class Spawner : MonoBehaviour
     public Transform[] spawnPoint;
     public SpawnData[] spawnData;
 
+    [Tooltip("스폰 단계가 바뀌는 간격(초). v1 원본은 10초")]
+    public float levelTime = 10f;   // [추가] 기존에는 10f로 하드코딩되어 있었음
+
     int level;
     float timer;
 
@@ -20,7 +23,7 @@ public class Spawner : MonoBehaviour
         if (!GameManager.instance.isLive)
             return;
         timer += Time.deltaTime;
-        level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / 10f), spawnData.Length - 1);
+        level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), spawnData.Length - 1);
 
         if (timer > spawnData[level].spawnTime)
         {

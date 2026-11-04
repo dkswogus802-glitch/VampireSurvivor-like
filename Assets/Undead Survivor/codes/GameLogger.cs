@@ -19,7 +19,8 @@ public static class GameLogger
     const int EnemyPoolIndex = 0;
 
     const string RunsHeader =
-        "run_id,started_at,character_id,result,survival_time,max_game_time,final_level,total_kills,final_health,max_health";
+        "run_id,started_at,character_id,result,survival_time,max_game_time,final_level,total_kills,final_health,max_health," +
+        "controller,item_strategy,sim_speed,bot_wander_time,bot_kite_time,bot_flee_time,balance_version";
     const string EventsHeader =
         "run_id,game_time,event_type,detail_id,detail_name,value,level,kills,health";
     const string SnapshotsHeader =
@@ -38,6 +39,12 @@ public static class GameLogger
     static float nextSnapshotTime;
     static bool quitHooked;
 
+    // 판 정보 (봇이 SetRunMeta로 설정, 사람이 플레이하면 기본값)
+    static string controller = "human";
+    static string itemStrategy = "-";
+    static float simSpeed = 1f;
+    static readonly float[] botStateTime = new float[3];   // Wander, Kite, Flee 상태로 보낸 시간
+
     public static bool IsRecording { get; private set; }
 
     public static string LogDirectory
@@ -45,11 +52,33 @@ public static class GameLogger
         get { return Path.Combine(Application.persistentDataPath, "PlayLogs"); }
     }
 
+    /// <summary>StartRun 전에 호출. 누가(사람/봇) 어떤 전략으로 플레이하는지 기록한다.</summary>
+    public static void SetRunMeta(string controllerName, string strategy, float speed)
+    {
+        controller = controllerName;
+        itemStrategy = strategy;
+        simSpeed = speed;
+    }
+
+    /// <summary>봇이 각 상태(0=Wander, 1=Kite, 2=Flee)로 보낸 시간을 누적한다.</summary>
+    public static void AddBotStateTime(int state, float dt)
+    {
+        if (IsRecording && state >= 0 && state < botStateTime.Length)
+            botStateTime[state] += dt;
+    }
+
     /// <summary>게임 시작 시 호출. 새 판의 기록을 시작한다.</summary>
     public static void StartRun(int playerId)
     {
         if (IsRecording)
+        {
+            // 이전 판이 끝나지 않은 채 새 판이 시작된 경우: 이전 판은 abandoned로 저장하고
+            // 이번 판의 정보(SetRunMeta로 설정한 값)는 그대로 유지
+            string c = controller, s = itemStrategy;
+            float sp = simSpeed;
             EndRun("abandoned");
+            SetRunMeta(c, s, sp);
+        }
 
         runId = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff", Inv);
         startedAt = DateTime.Now;
@@ -57,6 +86,8 @@ public static class GameLogger
         nextSnapshotTime = 0f;
         eventBuffer.Length = 0;
         snapshotBuffer.Length = 0;
+        for (int i = 0; i < botStateTime.Length; i++)
+            botStateTime[i] = 0f;
         IsRecording = true;
 
         if (!quitHooked)
@@ -127,8 +158,20 @@ public static class GameLogger
             gm.level.ToString(Inv),
             gm.kill.ToString(Inv),
             F(Mathf.Max(gm.health, 0f)),
-            F(gm.maxHealth)
+            F(gm.maxHealth),
+            controller,
+            itemStrategy,
+            F(simSpeed),
+            F(botStateTime[0]),
+            F(botStateTime[1]),
+            F(botStateTime[2]),
+            Clean(gm.balanceVersion)
         }) + "\n";
+
+        // 다음 판을 위해 기본값(사람 플레이)으로 되돌림
+        controller = "human";
+        itemStrategy = "-";
+        simSpeed = 1f;
 
         try
         {

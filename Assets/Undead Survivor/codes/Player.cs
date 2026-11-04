@@ -33,6 +33,14 @@ public class Player : MonoBehaviour
     {
         if (!GameManager.instance.isLive)
             return;
+
+        // [추가] 자동 플레이 봇이 켜져 있으면 키보드 대신 봇의 판단을 입력으로 사용
+        if (AutoPlayer.Active != null)
+        {
+            inputVec = AutoPlayer.Active.GetMoveInput();
+            return;
+        }
+
         inputVec.x = Input.GetAxisRaw("Horizontal");
         inputVec.y = Input.GetAxisRaw("Vertical");
     }

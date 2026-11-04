@@ -39,12 +39,7 @@ public class Weapon : MonoBehaviour
                 break;
         }
 
-        //... Test code
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            LevelUp(10, 1);
-        }
+        // [제거] 스페이스바로 무기를 강화하던 테스트 코드 → 플레이 데이터가 오염되므로 삭제
     }
 
     public void LevelUp(float damage, int count)
@@ -55,7 +50,8 @@ public class Weapon : MonoBehaviour
         if (id == 0)
             Batch();
 
-        player.BroadcastMessage("Apply Gear", SendMessageOptions.DontRequireReceiver);
+        // [버그 수정] "Apply Gear"(공백)로 되어 있어 Gear.ApplyGear가 호출되지 않았음
+        player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
 
     public void Init(ItemData data)
@@ -98,7 +94,8 @@ public class Weapon : MonoBehaviour
         hand.spriter.sprite = data.hand;
         hand.gameObject.SetActive(true);
 
-        player.BroadcastMessage("Apply Gear", SendMessageOptions.DontRequireReceiver);
+        // [버그 수정] 새 무기를 얻었을 때도 장갑/신발 효과가 적용되도록 메서드 이름 수정
+        player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
 
     }
 

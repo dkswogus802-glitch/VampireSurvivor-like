@@ -94,6 +94,9 @@ public class Item : MonoBehaviour
                     break;
         }
 
+        // [추가] 어떤 아이템을 몇 레벨로 골랐는지 기록 (회복 아이템은 0)
+        GameLogger.LogEvent("item_pick", data.itemId, data.itemName, level);
+
         if (level == data.damages.Length)
         {
             GetComponent<Button>().interactable = false;

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    //... ÇÁ¸®ÆÕµéÀ» º¸°üÇÒ º¯¼ö 
+    //... í”„ë¦¬íŒ¹ë“¤ì„ ë³´ê´€í•  ë³€ìˆ˜ 
     public GameObject[] prefabs;
 
-    //... Ç® ´ã´çÀ» ÇÏ´Â ¸®½ºÆ®µé
+    //... í’€ ë‹´ë‹¹ì„ í•˜ëŠ” ë¦¬ìŠ¤íŠ¸ë“¤
     List<GameObject>[] pools;
 
     void Awake()
@@ -24,24 +24,36 @@ public class PoolManager : MonoBehaviour
     {
         GameObject select = null;
 
-        //... ¼±ÅÃÇÑ Ç®ÀÇ ³î°í ÀÖ´Â °ÔÀÓ ¿ÀºêÁ§Æ® Á¢±Ù
+        //... ì„ íƒí•œ í’€ì˜ ë†€ê³  ìˆëŠ” ê²Œì„ ì˜¤ë¸Œì íŠ¸ ì ‘ê·¼
 
         foreach (GameObject item in pools[index])
         {
-            if(!item.activeSelf)        //... ¹ß°ßÇÏ¸é select º¯¼ö¿¡ ÇÒ´ç 
+            if(!item.activeSelf)        //... ë°œê²¬í•˜ë©´ select ë³€ìˆ˜ì— í• ë‹¹ 
             {
                 select = item;
                 select.SetActive(true);
                 break;
             }
         }
-        //... ¸øÃ£¾ÒÀ¸¸é?? 
+        //... ëª»ì°¾ì•˜ìœ¼ë©´?? 
         if (!select)
-        { //... »õ·Ó°Ô »ı¼ºÇÏ°í select ÇÔ¼ö¿¡ ÇÒ´ç
+        { //... ìƒˆë¡­ê²Œ ìƒì„±í•˜ê³  select í•¨ìˆ˜ì— í• ë‹¹
             select = Instantiate(prefabs[index], transform);
             pools[index].Add(select);
         }
         return select;
+    }
+
+    // [ì¶”ê°€] í•´ë‹¹ í’€ì—ì„œ í˜„ì¬ í™œì„±í™”ëœ(í™”ë©´ì— ì‚´ì•„ìˆëŠ”) ì˜¤ë¸Œì íŠ¸ ìˆ˜
+    public int CountActive(int index)
+    {
+        int count = 0;
+        foreach (GameObject item in pools[index])
+        {
+            if (item.activeSelf)
+                count++;
+        }
+        return count;
     }
 
 }

@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public float maxHealth;
     public RuntimeAnimatorController[] animCon;
     public Rigidbody2D target;
+    public int spriteType;   // [추가] 적 종류 (로그 기록용)
 
     bool isLive;
 
@@ -63,6 +64,7 @@ public class Enemy : MonoBehaviour
 
     public void Init(SpawnData data)
     {
+        spriteType = data.spriteType;
         anim.runtimeAnimatorController = animCon[data.spriteType];
         speed = data.speed;
         maxHealth = data.health;
@@ -89,6 +91,8 @@ public class Enemy : MonoBehaviour
             spriter.sortingOrder = 1;
             anim.SetBool("Dead", true);
             GameManager.instance.kill++;
+            if (GameManager.instance.isLive)   // [추가] 승리 후 일괄 정리된 적은 제외
+                GameLogger.LogEvent("kill", spriteType, "enemy_" + spriteType);
             GameManager.instance.GetExp();
         }
     }

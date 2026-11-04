@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
         health = maxHealth;
 
         player.gameObject.SetActive(true);
+        GameLogger.StartRun(playerId);   // [추가] 플레이 로그 기록 시작
         uiLevelUp.Select(playerId % 2);
         Resume();
     }
@@ -49,6 +50,8 @@ public class GameManager : MonoBehaviour
     IEnumerator GameOverRoutine()
     {
         isLive = false;
+        GameLogger.LogEvent("death");
+        GameLogger.EndRun("lose");       // [추가] 패배로 기록 저장
 
         yield return new WaitForSeconds(0.5f);
 
@@ -66,6 +69,7 @@ public class GameManager : MonoBehaviour
     IEnumerator GameVictoryRoutine()
     {
         isLive = false;
+        GameLogger.EndRun("win");        // [추가] 승리로 기록 저장
         enemyCleaner.SetActive(true);
         
         yield return new WaitForSeconds(0.5f);
@@ -87,6 +91,7 @@ public class GameManager : MonoBehaviour
             return;
 
         gameTime += Time.deltaTime;
+        GameLogger.Tick();               // [추가] 5초마다 상태 스냅샷
 
         if (gameTime > maxGameTime)
         {
@@ -104,6 +109,7 @@ public class GameManager : MonoBehaviour
         {
             level++;
             exp = 0;
+            GameLogger.LogEvent("level_up", -1, "", level);   // [추가]
             uiLevelUp.Show();
         }
     }
